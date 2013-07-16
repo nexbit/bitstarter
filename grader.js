@@ -71,26 +71,25 @@ if(require.main == module) {
 )
 	.parse(process.argv);
 
-    var checkJson;
     if (program.url) {
        rest.get(program.url).on('complete', function(result) {
 	  if (result instanceof Error) {
-	     sys.puts('Error: ' + result.message);
+	     console.log('Error: ' + result.message);
 	     process.exit(1);
 	  } else {
-	     checkJson = checkHtmlFile(function() {
+	     var checkJson = checkHtmlFile(function() {
 		   return cheerio.load(result);
 		}, program.checks);
+	     var outJson = JSON.stringify(checkJson, null, 4);
+	     console.log(outJson);
 	  }
        });
     } else if (program.file) {
        checkJson = checkHtmlFile(function() {
 	      return cheerioHtmlFile(program.file);
 	   }, program.checks);
-    }
-    if (checkJson) {
-	var outJson = JSON.stringify(checkJson, null, 4);
-	console.log(outJson);
+       var outJson = JSON.stringify(checkJson, null, 4);
+       console.log(outJson);
     }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
